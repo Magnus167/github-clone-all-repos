@@ -17,4 +17,8 @@ Home = "https://github.com/magnus167/github-clone-all-repos"
 Documentation = "https://github.com/Magnus167/github-clone-all-repos/blob/main/README.md"
 
 [project.scripts]
-github-clone-all-repos = "github-clone-all-repos.__main__:main"
+github-clone-all-repos = "github_clone_all_repos:main"
+
+
+[tool.setuptools]
+package-dir = { "" = "src" }
