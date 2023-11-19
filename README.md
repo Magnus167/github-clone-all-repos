@@ -5,9 +5,10 @@ A Python script designed to clone all public repositories of a specified GitHub 
 Tags:
 [[git]], [[github]], [[python]], [[automation]], [[scripting]], [[api]], [[git]], [[multi-threading]]
 
-## Setting Up the Environment
 
-First, we import necessary modules and set default values:
+### Setting Up the Environment
+
+The script begins by importing necessary modules and setting default values:
 
 ```python
 import requests
@@ -15,9 +16,17 @@ from typing import List, Optional
 import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed, Future
-from tqdm import tqdm
 import argparse
 import time
+
+try:
+    from tqdm import tqdm
+except ImportError:
+    print(
+        "Could not import tqdm. "
+        "Run 'pip install tqdm' to enable progress bar."
+    )
+    tqdm = lambda x, *args, **kwargs: x
 
 # Default values
 DEFAULT_USERNAME: str = "magnus167"
@@ -25,14 +34,18 @@ DEFAULT_DIRECTORY: str = "./repos"
 DEFAULT_TOKEN: Optional[str] = os.getenv("GH_TOKEN", None)
 ```
 
-- **[Requests](https://docs.python-requests.org/en/latest/)**: For making HTTP requests to the GitHub API.
-- **[OS](https://docs.python.org/3/library/os.html) & [Subprocess](https://docs.python.org/3/library/subprocess.html)**: For interacting with the system and running shell commands.
-- **[Concurrent.Futures](https://docs.python.org/3/library/concurrent.futures.html)**: For parallelizing the cloning process.
-- **[Tqdm](https://tqdm.github.io/)**: For adding progress bars.
+- **[Requests](https://docs.python-requests.org/en/latest/)**: Used for making HTTP requests to the GitHub API.
+- **[OS](https://docs.python.org/3/library/os.html) & [Subprocess](https://docs.python.org/3/library/subprocess.html)**: For interacting with the operating system and executing shell commands.
+- **[Concurrent.Futures](https://docs.python.org/3/library/concurrent.futures.html)**: Enables parallel execution of tasks, improving efficiency.
 - **[Argparse](https://docs.python.org/3/library/argparse.html)**: For parsing command-line arguments.
-- **[Time](https://docs.python.org/3/library/time.html)**: For adding delays between retries.
+- **[Time](https://docs.python.org/3/library/time.html)**: Used for implementing delays.
 
-Default values for the username, directory, and GitHub token are set, providing a baseline configuration.
+The script attempts to import `tqdm` for progress bar functionality. If `tqdm` is not installed, it falls back to a lambda function that simply returns the input without modification. This ensures that the script remains functional, albeit without progress bars, even if `tqdm` is not available.
+
+- **[Tqdm](https://tqdm.github.io/)**: A fast, extensible progress bar for loops and CLI. The script checks for its presence and advises on installation if it's missing.
+
+Default values for the GitHub username, directory for cloning repositories, and the GitHub token (sourced from an environment variable) are defined, providing a baseline configuration for the script.
+
 
 ## Fetching Public Repositories
 
