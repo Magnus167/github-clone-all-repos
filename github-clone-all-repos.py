@@ -9,16 +9,25 @@ import time
 try:
     from tqdm import tqdm
 except ImportError:
-    print(
-        "Could not import tqdm. "
-        "Run 'pip install tqdm' to enable progress bar."
-    )
+    print("Could not import tqdm. Run 'pip install tqdm' to enable progress bar.")
     tqdm = lambda x, *args, **kwargs: x
 
 # Default values
 DEFAULT_USERNAME: str = "magnus167"
 DEFAULT_DIRECTORY: str = "./repos"
 DEFAULT_TOKEN: Optional[str] = os.getenv("GH_TOKEN", None)
+
+
+def check_git_installed() -> None:
+    """
+    Checks if git is installed on the system.
+    """
+    try:
+        subprocess.run("git --version", shell=True, check=True)
+    except subprocess.CalledProcessError:
+        raise RuntimeError(
+            "Unable to find or run git. Please check installation or/and permissions."
+        )
 
 
 def get_public_repos(username: str, pat_token: Optional[str] = None) -> List[str]:
@@ -115,6 +124,7 @@ def clone_repos(
             disable=not show_progress,
         ):
             future_to_repo[executor.submit(clone_repo, repo, directory)] = repo
+            time.sleep(1)
 
         for future in tqdm(
             as_completed(future_to_repo),
