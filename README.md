@@ -304,7 +304,7 @@ This block parses command-line arguments and calls the `main` function with the 
 
 ## Link to full script
 
-The full script can be found [here]()
+The full script can be found [here](https://github.com/Magnus167/github-clone-all-repos/blob/main/clone-all.py) : [Magnu167/github-clone-all-repos](https://github.com/Magnus167/github-clone-all-repos)
 
 ## Conclusion
 
