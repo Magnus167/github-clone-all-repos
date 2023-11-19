@@ -5,8 +5,21 @@ A Python script designed to clone all public repositories of a specified GitHub 
 Tags:
 [[git]], [[github]], [[python]], [[automation]], [[scripting]], [[api]], [[git]], [[multi-threading]]
 
+__Table of Contents__
+- [github-clone-all-repos](#github-clone-all-repos)
+  - [Setting Up the Environment](#setting-up-the-environment)
+  - [Ensuring Git Availability](#ensuring-git-availability)
+  - [Fetching Public Repositories](#fetching-public-repositories)
+  - [Cloning Repositories with Retries](#cloning-repositories-with-retries)
+  - [Cloning a Single Repository](#cloning-a-single-repository)
+  - [Cloning Multiple Repositories Concurrently](#cloning-multiple-repositories-concurrently)
+  - [Main Function and Command-Line Interface](#main-function-and-command-line-interface)
+  - [Running the Script](#running-the-script)
+  - [Link to full script](#link-to-full-script)
+  - [Usage and installation](#usage-and-installation)
+  - [Conclusion](#conclusion)
 
-### Setting Up the Environment
+## Setting Up the Environment
 
 The script begins by importing necessary modules and setting default values:
 
@@ -45,6 +58,23 @@ The script attempts to import `tqdm` for progress bar functionality. If `tqdm` i
 - **[Tqdm](https://tqdm.github.io/)**: A fast, extensible progress bar for loops and CLI. The script checks for its presence and advises on installation if it's missing.
 
 Default values for the GitHub username, directory for cloning repositories, and the GitHub token (sourced from an environment variable) are defined, providing a baseline configuration for the script.
+
+
+## Ensuring Git Availability
+The script now includes a function check_git_installed to verify if Git is installed and accessible on the user's system. This is crucial as the script relies on Git to clone repositories.
+
+```python
+def check_git_installed() -> None:
+    """
+    Checks if git is installed on the system.
+    """
+    try:
+        subprocess.run("git --version", shell=True, check=True)
+    except subprocess.CalledProcessError:
+        raise RuntimeError(
+            "Unable to find or run git. Please check installation or/and permissions."
+        )
+```
 
 
 ## Fetching Public Repositories
@@ -305,6 +335,43 @@ This block parses command-line arguments and calls the `main` function with the 
 ## Link to full script
 
 The full script can be found [here](https://github.com/Magnus167/github-clone-all-repos/blob/main/clone-all.py) : [Magnu167/github-clone-all-repos](https://github.com/Magnus167/github-clone-all-repos)
+
+
+
+## Usage and installation
+
+Install using:
+```bash
+python -m pip install git+https://github.com/magnus167/github-clone-all-repos@main
+```
+or:
+```bash
+git clone https://github.com/magnus167/github-clone-all-repos.git
+cd github-clone-all-repos
+python -m pip install .
+```
+
+Usage:
+```
+# if installed
+python -m github_clone_all_repos --help
+# if not installed
+python path/to/github_clone_all_repos.py --help
+```
+Here's the help output:
+```
+optional arguments:
+  -h, --help            show this help message and exit
+  -u USERNAME, --username USERNAME
+                        GitHub username to clone repos from.
+  -d DIRECTORY, --directory DIRECTORY
+                        Directory to clone repos into.
+  -p, --show-progress   Set to False to hide the progress bar.
+  --n-threads N_THREADS
+                        Number of threads to use for cloning repos.
+  --token TOKEN         File containing a GitHub Personal Access Token (PAT). #ENV to use GH_TOKEN env variable.
+
+```
 
 ## Conclusion
 
