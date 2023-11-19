@@ -309,7 +309,3 @@ The full script can be found [here](https://github.com/Magnus167/github-clone-al
 ## Conclusion
 
 This Python script demonstrates a practical approach to automating the cloning of GitHub repositories. By leveraging Python's powerful libraries, it efficiently clones multiple repositories, handles potential errors, and provides a user-friendly command-line interface. Whether for backup, analysis, or migration purposes, this script offers a robust solution for managing GitHub repositories programmatically.
-
----
-
-This markdown format should be easy to copy and use in a blog or documentation setting.
