@@ -3,9 +3,17 @@ from typing import List, Optional
 import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed, Future
-from tqdm import tqdm
 import argparse
 import time
+
+try:
+    from tqdm import tqdm
+except ImportError:
+    print(
+        "Could not import tqdm. "
+        "Run 'pip install tqdm' to enable progress bar."
+    )
+    tqdm = lambda x, *args, **kwargs: x
 
 # Default values
 DEFAULT_USERNAME: str = "magnus167"
