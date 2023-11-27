@@ -29,21 +29,34 @@ def check_git_installed() -> None:
             "Unable to find or run git. Please check installation or/and permissions."
         )
 
-
-def get_public_repos(username: str, pat_token: Optional[str] = None) -> List[str]:
+def get_public_repos(username: str, pat_token: Optional[str] = None, page_url: Optional[str] = None) -> List[str]:
     """
-    Fetches the list of public repositories for a given GitHub username.
+    Fetches the list of public repositories for a given GitHub username, accounting for pagination.
 
     :param username: GitHub username
     :param pat_token: Personal Access Token for GitHub API (optional)
+    :param page_url: URL for the current page (used for recursion)
     :return: List of repository clone URLs
     """
-    print(f"Fetching public repos for {username}...")
     headers: dict = {"Authorization": f"token {pat_token}"} if pat_token else {}
-    url: str = f"https://api.github.com/users/{username}/repos"
+    if page_url is None:
+        url: str = f"https://api.github.com/users/{username}/repos"
+    else:
+        url = page_url
+
     response = requests.get(url, headers=headers)
-    repos = response.json()
-    return [repo["clone_url"] for repo in repos if not repo["private"]]
+    response_json = response.json()
+    repos = [repo for repo in response_json if not repo["fork"]]
+    if pat_token is None:
+        repos = [repo for repo in repos if not repo["private"]]
+    repo_urls = [repo["clone_url"] for repo in repos]
+
+    # Check for 'next' page in the 'Link' header
+    if 'next' in response.links:
+        next_page_url = response.links['next']['url']
+        repo_urls += get_public_repos(username, pat_token, next_page_url)
+
+    return repo_urls
 
 
 def run_git_clone(
